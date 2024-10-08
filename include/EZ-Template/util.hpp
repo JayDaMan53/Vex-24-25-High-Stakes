@@ -22,7 +22,7 @@ namespace ez {
 /**
  * Prints our branding all over your pros terminal
  */
-void ez_template_print();
+void print_ez_template();
 
 /**
  * Prints to the brain screen in one string.  Splits input between lines with
@@ -33,7 +33,7 @@ void ez_template_print();
  * @param line
  *        Starting line to print on, defaults to 0
  */
-void screen_print(std::string text, int line = 0);
+void print_to_screen(std::string text, int line = 0);
 
 /////
 //
@@ -87,17 +87,17 @@ int sgn(double input);
 /**
  * Returns true if the input is < 0
  */
-bool reversed_active(double input);
+bool is_reversed(double input);
 
 /**
  * Returns input restricted to min-max threshold
  */
-double clamp(double input, double max, double min);
+double clip_num(double input, double max, double min);
 
 /**
  * Is the SD card plugged in?
  */
-const bool SD_CARD_ACTIVE = pros::usd::is_installed();
+const bool IS_SD_CARD = pros::usd::is_installed();
 
 /**
  * Delay time for tasks
