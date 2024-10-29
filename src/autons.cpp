@@ -17,8 +17,9 @@ const int SWING_SPEED = 90;
 
 pros::Controller master (CONTROLLER_MASTER);
 //pros::Motor intake (11, MOTOR_GEARSET_18, false);
-pros::Motor launcher (-3, MOTOR_GEARSET_18, false);
+// pros::Motor launcher (-3, MOTOR_GEARSET_18, false);
 
+// pros::ADIDigitalOut piston ('A');
 
 ///
 // Constants
@@ -361,7 +362,7 @@ void MovefowardV2() {
 } 
 
 void Skills() {
-  launcher.move(127);
+  // launcher.move(127);
 }
 
 // . . .

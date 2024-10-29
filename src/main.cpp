@@ -6,6 +6,9 @@
 #include <vector>
 pros::Controller master (CONTROLLER_MASTER);
 
+pros::ADIDigitalOut piston ('b');
+pros::ADIDigitalOut piston2 ('c');
+
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
 LV_IMG_DECLARE(res);/*/
@@ -19,12 +22,12 @@ LV_IMG_DECLARE(res);/*/
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)`
   //   the first port is the sensored port (when trackers are not used!)
-  {-19, -18}
+  {-6, -16}
   
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{20, 17}
+  ,{2, 15}
 
   // IMU Port
   ,11
@@ -172,7 +175,11 @@ void initialize() {
   // and it properly scales the GIF to the object's dimensions.
   //static Gif gif(file.c_str(), obj);
 
-  static Gif gif("/usd/meme3.gif", obj);
+  static Gif gif("/usd/meme8.gif", obj);
+
+  lv_obj_align(obj, NULL, LV_ALIGN_CENTER, 10, 0);
+
+  static Gif gif2("/usd/meme8.gif", obj);
 
   /*/lv_obj_t *img = lv_img_create(lv_scr_act(), NULL);
   lv_img_set_src(img, &res);
@@ -186,8 +193,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-  //Intake.brake();
-  // Launcher.brake();
+
 }
 
 
@@ -243,6 +249,8 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
+  bool lol = false;
+
   while (true) {
 
     chassis.tank(); // Tank control
@@ -250,6 +258,13 @@ void opcontrol() {
     // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
+
+    if (master.get_digital(DIGITAL_L1)) {
+      lol = !lol;
+      piston.set_value(lol);
+      piston2.set_value(lol);
+      pros::delay(500);
+    }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
       Intake.move(127);

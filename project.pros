@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Over Under Vex 2023-2024",
+    "project_name": "High Stakes Vex 2024-2025",
     "target": "v5",
     "templates": {
       "EZ-Template": {
@@ -190,7 +190,7 @@
     },
     "upload_options": {
       "description": "Code by Jaydon ",
-      "icon": "clawbot",
+      "icon": "ufo",
       "after": "none",
       "slot": 1
     }
