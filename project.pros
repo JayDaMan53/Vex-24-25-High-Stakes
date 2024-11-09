@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "High Stakes Vex 2024-2025",
+    "project_name": "High Stakes Vex 24-25",
     "target": "v5",
     "templates": {
       "EZ-Template": {

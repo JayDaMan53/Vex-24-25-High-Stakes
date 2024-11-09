@@ -16,10 +16,12 @@ const int TURN_SPEED  = 60;
 const int SWING_SPEED = 90;
 
 pros::Controller master (CONTROLLER_MASTER);
-//pros::Motor intake (11, MOTOR_GEARSET_18, false);
-// pros::Motor launcher (-3, MOTOR_GEARSET_18, false);
 
-// pros::ADIDigitalOut piston ('A');
+pros::ADIDigitalOut apiston ('b');
+pros::ADIDigitalOut apiston2 ('c');
+
+pros::Motor aintakeB (-3, MOTOR_GEARSET_18, false);
+pros::Motor aintakeA (9, MOTOR_GEARSET_18, false);
 
 ///
 // Constants
@@ -31,12 +33,22 @@ pros::Controller master (CONTROLLER_MASTER);
 void default_constants() {
   chassis.set_slew_min_power(80, 80);
   chassis.set_slew_distance(7, 7);
-  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 25, 0);
+  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
   chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
   chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
   chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
   chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
 }
+
+// void default_constants() {
+//   chassis.set_slew_min_power(80, 80);
+//   chassis.set_slew_distance(7, 7);
+//   chassis.set_pid_constants(&chassis.headingPID, 11, 0, 25, 0);
+//   chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
+//   chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+//   chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
+//   chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+// }
 
 void one_mogo_constants() {
   chassis.set_slew_min_power(80, 80);
@@ -365,6 +377,26 @@ void Skills() {
   // launcher.move(127);
 }
 
-// . . .
-// Make your own autonomous functions here!
-// . . .
+// ***********
+// High Stakes
+// ***********
+
+void HighStakesRed() {
+  chassis.set_drive_pid(-40, DRIVE_SPEED, false,false);
+  chassis.wait_drive();
+  pros::delay(1000);
+  apiston.set_value(1);
+  apiston2.set_value(1);
+  pros::delay(1000);
+  chassis.set_drive_pid(40, DRIVE_SPEED, false,false);
+  // chassis.wait_drive();
+  aintakeA.move(127);
+  aintakeB.move(127);
+  pros::delay(2000);
+  aintakeA.move(0);
+  aintakeB.move(0);
+}
+
+void HighStakesSkills() {
+  
+}

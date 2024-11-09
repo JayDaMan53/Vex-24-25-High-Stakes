@@ -28,3 +28,7 @@ void LeftPull();
 void RightPull();
 void Movefoward();
 void MovefowardV2();
+
+// NEW CODE 2024-2025
+void HighStakesRed();
+void HighStakesSkills();

@@ -9,6 +9,9 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
 
+pros::Motor intakeB (-3, MOTOR_GEARSET_18, false);
+pros::Motor intakeA (9, MOTOR_GEARSET_18, false);
+
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
 LV_IMG_DECLARE(res);/*/
@@ -22,12 +25,12 @@ LV_IMG_DECLARE(res);/*/
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)`
   //   the first port is the sensored port (when trackers are not used!)
-  {-6, -16}
+  {-6, -15}
   
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{2, 15}
+  ,{17, 16}
 
   // IMU Port
   ,11
@@ -87,7 +90,7 @@ void initialize() {
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0.1); // Sets the active brake kP. We recommend 0.1.
-  chassis.set_curve_default(5, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
+  // chassis.set_curve_default(5, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
   //chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
   exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
@@ -98,12 +101,15 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    //Auton("Code By: Jaydon\n\nHudson\n[Insert Image Here :D]", LeftDeposit),
-    //Auton("Code By: Jaydon\n\nHudson\nD:", RightDeposit),
+    // Auton("Code By: Jaydon\n\nHudson\n[Insert Image Here :D]", LeftDeposit),
+    // Auton("Code By: Jaydon\n\nHudson\nD:", RightDeposit),
     //Auton("Code By: Jaydon\n\nHudson\nIt's about Drive\nIt's about power\nWe stay hungry\nWe devour", LeftPull),
     //Auton("Code By: Jaydon\n\nHudson\nPOGGIES", RightPull),
     // Auton("Code By: Jaydon\n\nHudson\nALL MY FELLAS\nALL MY FELLAS\nALL MY FELLAS", MovefowardV2),
-    //Auton("Code By: Jaydon", Skills)
+    // Auton("Code By: Jaydon", Skills)
+    Auton("Red Side auto", HighStakesRed),
+    // Auton("Blue Side auto", HighStakesBlue),
+    // Auton("Skills", HighStakesSkills),
   });
   // Initialize chassis and auton selector
 
@@ -175,11 +181,19 @@ void initialize() {
   // and it properly scales the GIF to the object's dimensions.
   //static Gif gif(file.c_str(), obj);
 
-  static Gif gif("/usd/meme8.gif", obj);
+  static Gif gif("/usd/meme3.gif", obj);
 
-  lv_obj_align(obj, NULL, LV_ALIGN_CENTER, 10, 0);
+  // lv_obj_t* obj2 = lv_obj_create(screen, NULL);
 
-  static Gif gif2("/usd/meme8.gif", obj);
+  // // Set the object's size to the screen dimensions.
+  // lv_obj_set_size(obj2, screenWidth, screenHeight);
+
+  // // Optionally, set a transparent style if needed - ensure it's correctly defined elsewhere.
+  // lv_obj_set_style(obj2, &lv_style_transp);
+
+  // lv_obj_align(obj2, NULL, LV_ALIGN_CENTER, 200, 0);
+
+  // static Gif gif2("/usd/meme8.gif", obj2);
 
   /*/lv_obj_t *img = lv_img_create(lv_scr_act(), NULL);
   lv_img_set_src(img, &res);
@@ -264,6 +278,17 @@ void opcontrol() {
       piston.set_value(lol);
       piston2.set_value(lol);
       pros::delay(500);
+    }
+
+    if (master.get_digital(DIGITAL_L2)) {
+      intakeA.move(127);
+      intakeB.move(127);
+    } else if (master.get_digital(DIGITAL_R2)) { 
+      intakeA.move(38);
+      intakeB.move(38);
+    } else {
+      intakeA.move(0);
+      intakeB.move(0);
     }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
