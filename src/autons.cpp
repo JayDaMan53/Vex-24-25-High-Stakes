@@ -20,7 +20,7 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut apiston ('b');
 pros::ADIDigitalOut apiston2 ('c');
 
-pros::Motor aintakeB (-3, MOTOR_GEARSET_18, false);
+pros::Motor aintakeB (3, MOTOR_GEARSET_18, false);
 pros::Motor aintakeA (9, MOTOR_GEARSET_18, false);
 
 ///
@@ -397,6 +397,12 @@ void HighStakesRed() {
   aintakeB.move(0);
 }
 
-void HighStakesSkills() {
-  
+void HighStakesAuto() {
+  chassis.set_drive_pid(40, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  // aintakeA.move(75);
+  // aintakeB.move(75);
+  // pros::delay(450);
+  // aintakeA.move(0);
+  // aintakeB.move(0);
 }

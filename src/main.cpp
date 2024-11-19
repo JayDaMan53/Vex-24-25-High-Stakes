@@ -9,14 +9,14 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
 
-pros::Motor intakeB (-3, MOTOR_GEARSET_18, false);
+pros::Motor intakeB (3, MOTOR_GEARSET_18, false);
 pros::Motor intakeA (9, MOTOR_GEARSET_18, false);
 
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
 LV_IMG_DECLARE(res);/*/
 
-/////
+///// 
 // For instalattion, upgrading, documentations and tutorials, check out website!
 // https://ez-robotics.github.io/EZ-Template/
 /////
@@ -107,9 +107,10 @@ void initialize() {
     //Auton("Code By: Jaydon\n\nHudson\nPOGGIES", RightPull),
     // Auton("Code By: Jaydon\n\nHudson\nALL MY FELLAS\nALL MY FELLAS\nALL MY FELLAS", MovefowardV2),
     // Auton("Code By: Jaydon", Skills)
-    Auton("Red Side auto", HighStakesRed),
+    // Auton("Red Side auto", HighStakesRed),
     // Auton("Blue Side auto", HighStakesBlue),
     // Auton("Skills", HighStakesSkills),
+    Auton("HighStakesAuto", HighStakesAuto)
   });
   // Initialize chassis and auton selector
 
@@ -283,9 +284,6 @@ void opcontrol() {
     if (master.get_digital(DIGITAL_L2)) {
       intakeA.move(127);
       intakeB.move(127);
-    } else if (master.get_digital(DIGITAL_R2)) { 
-      intakeA.move(38);
-      intakeB.move(38);
     } else {
       intakeA.move(0);
       intakeB.move(0);
