@@ -9,7 +9,7 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
 
-pros::Motor intakeB (3, MOTOR_GEARSET_18, false);
+pros::Motor intakeB (10, MOTOR_GEARSET_18, false);
 pros::Motor intakeA (9, MOTOR_GEARSET_18, false);
 
 /*/lv_fs_file_t f;
@@ -264,7 +264,7 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
-  bool lol = false;
+  bool pistonval = false;
 
   while (true) {
 
@@ -274,19 +274,28 @@ void opcontrol() {
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
-    if (master.get_digital(DIGITAL_L1)) {
-      lol = !lol;
-      piston.set_value(lol);
-      piston2.set_value(lol);
+    if (master.get_digital(DIGITAL_L2)) {
+      pistonval = !pistonval;
+      piston.set_value(pistonval);
+      piston2.set_value(pistonval);
       pros::delay(500);
     }
 
-    if (master.get_digital(DIGITAL_L2)) {
-      intakeA.move(127);
+    // if (master.get_digital(DIGITAL_L1)) {
+    //   intakeA.move(127);
+    // } else {
+    //   intakeA.move(0);
+    // }
+
+    if (master.get_digital(DIGITAL_R1) || master.get_digital(DIGITAL_L1)) {
+      intakeA.move(90);
       intakeB.move(127);
+    } else if (master.get_digital(DIGITAL_R2)) {
+      intakeB.move(-70);
+      intakeA.move(-127);
     } else {
-      intakeA.move(0);
       intakeB.move(0);
+      intakeA.move(0);
     }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
