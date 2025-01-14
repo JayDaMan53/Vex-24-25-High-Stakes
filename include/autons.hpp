@@ -30,6 +30,7 @@ void Movefoward();
 void MovefowardV2();
 
 // NEW CODE 2024-2025
-void HighStakesRed();
 // void HighStakesSkills();
-void HighStakesAuto();
+void HighStakesMid();
+void HighStakesLeft();
+void HighStakesSkills();

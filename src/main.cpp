@@ -33,7 +33,7 @@ Drive chassis (
   ,{17, 16}
 
   // IMU Port
-  ,11
+  ,20
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -110,7 +110,8 @@ void initialize() {
     // Auton("Red Side auto", HighStakesRed),
     // Auton("Blue Side auto", HighStakesBlue),
     // Auton("Skills", HighStakesSkills),
-    Auton("HighStakesAuto", HighStakesAuto)
+    // Auton("HighStakesLeft", HighStakesLeft),
+    Auton("HighStakesLeft", HighStakesSkills)
   });
   // Initialize chassis and auton selector
 
@@ -288,8 +289,8 @@ void opcontrol() {
     // }
 
     if (master.get_digital(DIGITAL_R1) || master.get_digital(DIGITAL_L1)) {
-      intakeA.move(90);
-      intakeB.move(127);
+      intakeA.move(127);
+      intakeB.move(90);
     } else if (master.get_digital(DIGITAL_R2)) {
       intakeB.move(-70);
       intakeA.move(-127);

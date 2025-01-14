@@ -1,5 +1,6 @@
+// #include "autons.hpp"
 #include "main.h"
-
+#include <cmath>
 
 
 /////
@@ -20,7 +21,7 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut apiston ('b');
 pros::ADIDigitalOut apiston2 ('c');
 
-pros::Motor aintakeB (3, MOTOR_GEARSET_18, false);
+pros::Motor aintakeB (10, MOTOR_GEARSET_18, false);
 pros::Motor aintakeA (9, MOTOR_GEARSET_18, false);
 
 ///
@@ -381,28 +382,66 @@ void Skills() {
 // High Stakes
 // ***********
 
-void HighStakesRed() {
-  chassis.set_drive_pid(-40, DRIVE_SPEED, false,false);
-  chassis.wait_drive();
-  pros::delay(1000);
-  apiston.set_value(1);
-  apiston2.set_value(1);
-  pros::delay(1000);
-  chassis.set_drive_pid(40, DRIVE_SPEED, false,false);
-  // chassis.wait_drive();
-  aintakeA.move(127);
-  aintakeB.move(127);
-  pros::delay(2000);
-  aintakeA.move(0);
-  aintakeB.move(0);
-}
-
-void HighStakesAuto() {
+void HighStakesMid() {
   chassis.set_drive_pid(40, DRIVE_SPEED, false, false);
   chassis.wait_drive();
-  // aintakeA.move(75);
-  // aintakeB.move(75);
-  // pros::delay(450);
+}
+
+void HighStakesLeft() {
+  chassis.set_drive_pid(-20, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-12, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  aintakeB.move(90);
+  aintakeA.move(127);
+  pros::delay(750);
+  aintakeB.move(0);
+  aintakeA.move(0);
+  chassis.set_drive_pid(10, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-130, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-55, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  apiston.set_value(1);
+  apiston2.set_value(1);
+  chassis.set_turn_pid(2, TURN_SPEED);
+  chassis.wait_drive();
+  aintakeA.move(-90);
+  pros::delay(500);
+  aintakeA.move(127);
+  aintakeB.move(90);
+  chassis.set_drive_pid(30, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(50, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
   // aintakeA.move(0);
   // aintakeB.move(0);
+}
+
+void HighStakesSkills() {
+  aintakeB.move(90);
+  aintakeA.move(127);
+  pros::delay(500);
+  aintakeB.move(0);
+  aintakeA.move(0);
+  chassis.set_drive_pid(25, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-25, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  apiston.set_value(1);
+  apiston2.set_value(1);
+  chassis.set_turn_pid(0, TURN_SPEED);
+  chassis.wait_drive();
+  aintakeB.move(90);
+  aintakeA.move(127);
+  chassis.set_drive_pid(25, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+
 }
