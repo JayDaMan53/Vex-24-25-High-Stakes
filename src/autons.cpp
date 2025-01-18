@@ -1,4 +1,5 @@
 // #include "autons.hpp"
+#include "autons.hpp"
 #include "main.h"
 #include <cmath>
 
@@ -16,13 +17,13 @@ const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We d
 const int TURN_SPEED  = 60;
 const int SWING_SPEED = 90;
 
-pros::Controller master (CONTROLLER_MASTER);
+pros::Controller master (pros::E_CONTROLLER_MASTER);
 
 pros::ADIDigitalOut apiston ('b');
 pros::ADIDigitalOut apiston2 ('c');
 
-pros::Motor aintakeB (10, MOTOR_GEARSET_18, false);
-pros::Motor aintakeA (9, MOTOR_GEARSET_18, false);
+pros::Motor aintakeB (10, pros::E_MOTOR_GEARSET_18, false);
+pros::Motor aintakeA (9, pros::E_MOTOR_GEARSET_18, false);
 
 ///
 // Constants
@@ -433,7 +434,7 @@ void HighStakesSkills() {
   chassis.wait_drive();
   chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(-25, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(-35, DRIVE_SPEED, false, false);
   chassis.wait_drive();
   apiston.set_value(1);
   apiston2.set_value(1);
@@ -441,7 +442,23 @@ void HighStakesSkills() {
   chassis.wait_drive();
   aintakeB.move(90);
   aintakeA.move(127);
-  chassis.set_drive_pid(25, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(30, DRIVE_SPEED, false, false);
   chassis.wait_drive();
-
+  pros::delay(250);
+  chassis.set_drive_pid(-30, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.reset_pid_targets();
+  chassis.set_turn_pid(-90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(40, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.reset_pid_targets();
+  chassis.set_turn_pid(45, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-20, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  apiston.set_value(0);
+  apiston2.set_value(0);
+  aintakeB.move(0);
+  aintakeA.move(0);
 }
