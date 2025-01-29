@@ -430,7 +430,7 @@ void HighStakesSkills() {
   pros::delay(500);
   aintakeB.move(0);
   aintakeA.move(0);
-  chassis.set_drive_pid(25, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(20, DRIVE_SPEED, false, false);
   chassis.wait_drive();
   chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
@@ -442,10 +442,10 @@ void HighStakesSkills() {
   chassis.wait_drive();
   aintakeB.move(90);
   aintakeA.move(127);
-  chassis.set_drive_pid(30, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(35, DRIVE_SPEED, false, false);
   chassis.wait_drive();
   pros::delay(250);
-  chassis.set_drive_pid(-30, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(-35, DRIVE_SPEED, false, false);
   chassis.wait_drive();
   chassis.reset_pid_targets();
   chassis.set_turn_pid(-90, TURN_SPEED);
@@ -461,4 +461,12 @@ void HighStakesSkills() {
   apiston2.set_value(0);
   aintakeB.move(0);
   aintakeA.move(0);
+  // end of first mogo
+  chassis.reset_gyro();
+  chassis.set_drive_pid(22, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-140, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-100, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
 }

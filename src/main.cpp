@@ -111,7 +111,7 @@ void initialize() {
     // Auton("Blue Side auto", HighStakesBlue),
     // Auton("Skills", HighStakesSkills),
     // Auton("HighStakesLeft", HighStakesLeft),
-    Auton("HighStakesLeft", HighStakesSkills)
+    Auton("HighStakesLeft", HighStakesSkills) 
   });
   // Initialize chassis and auton selector
 
@@ -266,6 +266,7 @@ void opcontrol() {
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
   bool pistonval = false;
+  bool pistonpushed = false;
 
   while (true) {
 
@@ -275,11 +276,14 @@ void opcontrol() {
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
-    if (master.get_digital(DIGITAL_L2)) {
+    if (master.get_digital(DIGITAL_L2) && !pistonpushed) {
+      pistonpushed = true;
       pistonval = !pistonval;
       piston.set_value(pistonval);
       piston2.set_value(pistonval);
-      pros::delay(500);
+      // pros::delay(500); // Removed because it causing the robot to drive when pushing the button
+    } else if (pistonpushed && !master.get_digital(DIGITAL_L2)) {
+      pistonpushed = false; // added to prevent the piston from toggling multiple times
     }
 
     // if (master.get_digital(DIGITAL_L1)) {
