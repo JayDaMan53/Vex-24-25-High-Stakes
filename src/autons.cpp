@@ -430,7 +430,7 @@ void HighStakesSkills() {
   pros::delay(500);
   aintakeB.move(0);
   aintakeA.move(0);
-  chassis.set_drive_pid(20, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(22, DRIVE_SPEED, false, false);
   chassis.wait_drive();
   chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
@@ -450,7 +450,7 @@ void HighStakesSkills() {
   chassis.reset_pid_targets();
   chassis.set_turn_pid(-90, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(40, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(40, DRIVE_SPEED - 60, false, false);
   chassis.wait_drive();
   chassis.reset_pid_targets();
   chassis.set_turn_pid(45, TURN_SPEED);
@@ -463,10 +463,37 @@ void HighStakesSkills() {
   aintakeA.move(0);
   // end of first mogo
   chassis.reset_gyro();
-  chassis.set_drive_pid(22, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(12, DRIVE_SPEED, false, false);
   chassis.wait_drive();
-  chassis.set_turn_pid(-140, TURN_SPEED);
+  chassis.set_turn_pid(-128, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(-100, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(-110, DRIVE_SPEED, false, true);
   chassis.wait_drive();
+  apiston.set_value(1);
+  apiston2.set_value(1);
+  // chassis.set_drive_pid(10, DRIVE_SPEED, false, true);
+  // chassis.wait_drive();
+  chassis.reset_gyro();
+  chassis.set_turn_pid(100, TURN_SPEED);
+  chassis.wait_drive();
+  aintakeB.move(90);
+  aintakeA.move(127);
+  chassis.set_drive_pid(30, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-30, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.reset_gyro();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(60, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.reset_gyro();
+  chassis.set_turn_pid(-135, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-20, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  apiston.set_value(0);
+  apiston2.set_value(0);
+  aintakeB.move(0);
+  aintakeA.move(0);
 }
