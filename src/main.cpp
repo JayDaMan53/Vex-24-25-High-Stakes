@@ -1,6 +1,7 @@
 #include "main.h"
 #include "display/lvgl.h"
 #include "gif-pros/gifclass.hpp"
+#include "pros/misc.h"
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -11,6 +12,7 @@ pros::ADIDigitalOut piston2 ('c');
 
 pros::Motor intakeB (10, MOTOR_GEARSET_18, false);
 pros::Motor intakeA (9, MOTOR_GEARSET_18, false);
+pros::Motor Fish (5, MOTOR_GEARSET_18, false);
 
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
@@ -110,8 +112,8 @@ void initialize() {
     // Auton("Red Side auto", HighStakesRed),
     // Auton("Blue Side auto", HighStakesBlue),
     // Auton("Skills", HighStakesSkills),
-    // Auton("HighStakesLeft", HighStakesLeft),
-    Auton("HighStakesLeft", HighStakesSkills) 
+    Auton("HighStakesLeft", HighStakesLeft),
+    // Auton("HighStakesLeft", HighStakesSkills) 
   });
   // Initialize chassis and auton selector
 
@@ -183,7 +185,7 @@ void initialize() {
   // and it properly scales the GIF to the object's dimensions.
   //static Gif gif(file.c_str(), obj);
 
-  static Gif gif("/usd/meme3.gif", obj);
+  static Gif gif("/usd/fish/meme3.gif", obj);
 
   // lv_obj_t* obj2 = lv_obj_create(screen, NULL);
 
@@ -292,15 +294,25 @@ void opcontrol() {
     //   intakeA.move(0);
     // }
 
-    if (master.get_digital(DIGITAL_R1) || master.get_digital(DIGITAL_L1)) {
+    if (master.get_digital(DIGITAL_R1)) {
       intakeA.move(127);
-      intakeB.move(90);
+      intakeB.move(70);
     } else if (master.get_digital(DIGITAL_R2)) {
       intakeB.move(-70);
       intakeA.move(-127);
+    } else if (master.get_digital(DIGITAL_B)) {
+      intakeA.move(127);
     } else {
       intakeB.move(0);
       intakeA.move(0);
+    }
+
+    if (master.get_digital(DIGITAL_L1)) {
+      Fish.move(65);
+    } else if (master.get_digital(DIGITAL_Y)) {
+      Fish.move(-65);
+    } else {
+      Fish.move(0);
     }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
