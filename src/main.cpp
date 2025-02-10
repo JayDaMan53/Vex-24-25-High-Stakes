@@ -1,10 +1,13 @@
 #include "main.h"
+#include "autons.hpp"
 #include "display/lvgl.h"
 #include "gif-pros/gifclass.hpp"
 #include "pros/misc.h"
+#include <cstddef>
 #include <cstdio>
 #include <string>
 #include <vector>
+#include "autoSelect/selection.h"
 pros::Controller master (CONTROLLER_MASTER);
 
 pros::ADIDigitalOut piston ('b');
@@ -102,25 +105,28 @@ void initialize() {
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.add_autons({
-    // Auton("Code By: Jaydon\n\nHudson\n[Insert Image Here :D]", LeftDeposit),
-    // Auton("Code By: Jaydon\n\nHudson\nD:", RightDeposit),
-    //Auton("Code By: Jaydon\n\nHudson\nIt's about Drive\nIt's about power\nWe stay hungry\nWe devour", LeftPull),
-    //Auton("Code By: Jaydon\n\nHudson\nPOGGIES", RightPull),
-    // Auton("Code By: Jaydon\n\nHudson\nALL MY FELLAS\nALL MY FELLAS\nALL MY FELLAS", MovefowardV2),
-    // Auton("Code By: Jaydon", Skills)
-    // Auton("Red Side auto", HighStakesRed),
-    // Auton("Blue Side auto", HighStakesBlue),
-    // Auton("Skills", HighStakesSkills),
-    Auton("HighStakesLeft", HighStakesLeft),
-    // Auton("HighStakesLeft", HighStakesSkills) 
-  });
+  // ez::as::auton_selector.add_autons({
+  //   // Auton("Code By: Jaydon\n\nHudson\n[Insert Image Here :D]", LeftDeposit),
+  //   // Auton("Code By: Jaydon\n\nHudson\nD:", RightDeposit),
+  //   //Auton("Code By: Jaydon\n\nHudson\nIt's about Drive\nIt's about power\nWe stay hungry\nWe devour", LeftPull),
+  //   //Auton("Code By: Jaydon\n\nHudson\nPOGGIES", RightPull),
+  //   // Auton("Code By: Jaydon\n\nHudson\nALL MY FELLAS\nALL MY FELLAS\nALL MY FELLAS", MovefowardV2),
+  //   // Auton("Code By: Jaydon", Skills)
+  //   // Auton("Red Side auto", HighStakesRed),
+  //   // Auton("Blue Side auto", HighStakesBlue),
+  //   // Auton("Skills", HighStakesSkills),
+  //   Auton("HighStakesLeft", HighStakesLeft),
+  //   // Auton("HighStakesLeft", HighStakesSkills) 
+  // });
   // Initialize chassis and auton selector
 
+  // ez::as::initialize();
   chassis.initialize();
-  ez::as::initialize();
+  selector::init();
+}
 
-
+Gif* globalGif = nullptr;
+void renderGif() {
   /*/lv_obj_t* obj = lv_obj_create(lv_scr_act(), NULL);
   lv_obj_set_size(obj, 480, 240);
   lv_obj_set_style(obj, &lv_style_transp); // make the container invisible
@@ -187,6 +193,8 @@ void initialize() {
 
   static Gif gif("/usd/fish/meme3.gif", obj);
 
+  globalGif = &gif;
+
   // lv_obj_t* obj2 = lv_obj_create(screen, NULL);
 
   // // Set the object's size to the screen dimensions.
@@ -204,14 +212,17 @@ void initialize() {
   lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, 0);/*/
 }
 
-
 /**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-
+  // if (globalGif != nullptr) {
+  //   globalGif->clean();
+  //   globalGif = nullptr;
+  //   selector::init();
+  // }
 }
 
 
@@ -225,7 +236,7 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-  //master.set_text(0, 0, "Good luck!");
+
 }
 
 
@@ -246,9 +257,16 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
-}
+  renderGif();
 
+  if (selector::auton == 1 || selector::auton == -2) {
+    HighStakesLeft();
+  } else if (selector::auton == 2 || selector::auton == -1) {
+    // HighStakesRight();
+  } else if (selector::auton == 0) {
+    HighStakesSkills();
+  }
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -269,6 +287,8 @@ void opcontrol() {
 
   bool pistonval = false;
   bool pistonpushed = false;
+
+  renderGif();
 
   while (true) {
 
