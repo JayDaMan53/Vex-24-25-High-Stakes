@@ -308,9 +308,9 @@ void opcontrol() {
     }
 
     if (master.get_digital(DIGITAL_L1)) {
-      Fish.move(65);
+      Fish.move(75);
     } else if (master.get_digital(DIGITAL_Y)) {
-      Fish.move(-65);
+      Fish.move(-75);
     } else {
       Fish.move(0);
     }
