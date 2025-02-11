@@ -1,9 +1,8 @@
 #pragma once
-
-#include <string>
+// #include <string>
 
 //selector configuration
-#define HUE 360
+#define HUE 200
 #define DEFAULT 1
 #define AUTONS "Left", "Right", "Do Nothing"
 

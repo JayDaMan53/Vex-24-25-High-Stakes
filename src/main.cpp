@@ -122,7 +122,9 @@ void initialize() {
 
   // ez::as::initialize();
   chassis.initialize();
-  selector::init();
+  chassis.imu_loading_display(0);
+  const char *b[] = {AUTONS, ""}; // Used to force the auto slector to use the text I give it
+  selector::init(200, 1, b); // load the auton selector
 }
 
 Gif* globalGif = nullptr;
