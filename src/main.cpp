@@ -122,7 +122,6 @@ void initialize() {
 
   // ez::as::initialize();
   chassis.initialize();
-  chassis.imu_loading_display(0);
   const char *b[] = {AUTONS, ""}; // Used to force the auto slector to use the text I give it
   selector::init(200, 1, b); // load the auton selector
 }
@@ -290,6 +289,8 @@ void opcontrol() {
   bool pistonval = false;
   bool pistonpushed = false;
 
+  bool release = 0;
+
   renderGif();
 
   while (true) {
@@ -330,11 +331,20 @@ void opcontrol() {
     }
 
     if (master.get_digital(DIGITAL_L1)) {
-      Fish.move(75);
+      Fish.move(100);
     } else if (master.get_digital(DIGITAL_Y)) {
-      Fish.move(-75);
+      Fish.move(-100);
     } else {
       Fish.move(0);
+      Fish.set_brake_mode(MOTOR_BRAKE_BRAKE);
+    }
+
+    if (master.get_digital(DIGITAL_DOWN) || release > 0) {
+      Fish.set_brake_mode(MOTOR_BRAKE_COAST);
+      if (release == 0) {
+        release = 50;
+      }
+      release -= 1;
     }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
