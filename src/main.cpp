@@ -13,9 +13,9 @@ pros::Controller master (CONTROLLER_MASTER);
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
 
-pros::Motor intakeB (10, MOTOR_GEARSET_18, false);
-pros::Motor intakeA (9, MOTOR_GEARSET_18, false);
-pros::Motor Fish (5, MOTOR_GEARSET_18, false);
+pros::Motor intakeB (-5, MOTOR_GEARSET_18, false); // chain
+pros::Motor intakeA (-6, MOTOR_GEARSET_18, false); // grab
+pros::Motor Fish (15, MOTOR_GEARSET_18, false);
 
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
@@ -30,12 +30,12 @@ LV_IMG_DECLARE(res);/*/
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)`
   //   the first port is the sensored port (when trackers are not used!)
-  {-6, -15}
+  {-19, -18, -17}
   
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{17, 16}
+  ,{9, 2, 3}
 
   // IMU Port
   ,20
@@ -46,7 +46,7 @@ Drive chassis (
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
-  ,200
+  ,450
 
   // External Gear Ratio (MUST BE DECIMAL)
   //    (or gear ratio of tracking wheel)
@@ -305,7 +305,7 @@ void opcontrol() {
       pistonpushed = true;
       pistonval = !pistonval;
       piston.set_value(pistonval);
-      piston2.set_value(pistonval);
+      // piston2.set_value(pistonval);
       // pros::delay(500); // Removed because it causing the robot to drive when pushing the button
     } else if (pistonpushed && !master.get_digital(DIGITAL_L2)) {
       pistonpushed = false; // added to prevent the piston from toggling multiple times
@@ -319,9 +319,9 @@ void opcontrol() {
 
     if (master.get_digital(DIGITAL_R1)) {
       intakeA.move(127);
-      intakeB.move(70);
+      intakeB.move(127); // normal is 70
     } else if (master.get_digital(DIGITAL_R2)) {
-      intakeB.move(-70);
+      intakeB.move(-127); // normal is 70
       intakeA.move(-127);
     } else if (master.get_digital(DIGITAL_B)) {
       intakeA.move(127);
