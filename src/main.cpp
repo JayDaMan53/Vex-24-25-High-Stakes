@@ -12,6 +12,8 @@ pros::Controller master (CONTROLLER_MASTER);
 
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
+bool pistonval = true; // start up
+int whodidit = 0; // make it change relate to what we are doing
 
 pros::Motor intakeB (-5, MOTOR_GEARSET_18, false); // chain
 pros::Motor intakeA (-6, MOTOR_GEARSET_18, false); // grab
@@ -259,11 +261,17 @@ void autonomous() {
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
   renderGif();
+  whodidit = 1; // who did it is the auto
+  pistonval = true;
+  piston.set_value(true);
+
+  // HighStakesRight();
+  // return;
 
   if (selector::auton == 1 || selector::auton == -2) {
-    HighStakesLeft();
+    HighStakesLeft_NEW();
   } else if (selector::auton == 2 || selector::auton == -1) {
-    // HighStakesRight();
+    HighStakesRight();
   } else if (selector::auton == 0) {
     HighStakesSkills();
   }
@@ -286,8 +294,12 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
-  bool pistonval = false;
-  bool pistonpushed = false;
+  if (whodidit == 0) { // if auto doesn't run then clamp up but if auto did run then it says the same
+    piston.set_value(1);
+    pistonval = true;
+  }
+
+  bool pistonpushed = true;
 
   bool release = 0;
 
@@ -319,9 +331,9 @@ void opcontrol() {
 
     if (master.get_digital(DIGITAL_R1)) {
       intakeA.move(127);
-      intakeB.move(127); // normal is 70
-    } else if (master.get_digital(DIGITAL_R2)) {
       intakeB.move(-127); // normal is 70
+    } else if (master.get_digital(DIGITAL_R2)) {
+      intakeB.move(127); // normal is 70
       intakeA.move(-127);
     } else if (master.get_digital(DIGITAL_B)) {
       intakeA.move(127);
@@ -331,9 +343,9 @@ void opcontrol() {
     }
 
     if (master.get_digital(DIGITAL_L1)) {
-      Fish.move(100);
+      Fish.move(75);
     } else if (master.get_digital(DIGITAL_Y)) {
-      Fish.move(-100);
+      Fish.move(-75);
     } else {
       Fish.move(0);
       Fish.set_brake_mode(MOTOR_BRAKE_BRAKE);

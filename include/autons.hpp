@@ -33,4 +33,6 @@ void MovefowardV2();
 // void HighStakesSkills();
 void HighStakesMid();
 void HighStakesLeft();
+void HighStakesRight();
+void HighStakesLeft_NEW();
 void HighStakesSkills();

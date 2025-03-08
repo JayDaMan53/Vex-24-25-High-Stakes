@@ -1,6 +1,7 @@
 // #include "autons.hpp"
 #include "autons.hpp"
 #include "main.h"
+#include "pros/rtos.hpp"
 #include <cmath>
 
 
@@ -22,8 +23,9 @@ pros::Controller master (pros::E_CONTROLLER_MASTER);
 pros::ADIDigitalOut apiston ('b');
 pros::ADIDigitalOut apiston2 ('c');
 
-pros::Motor aintakeB (10, pros::E_MOTOR_GEARSET_18, false);
-pros::Motor aintakeA (9, pros::E_MOTOR_GEARSET_18, false);
+pros::Motor aintakeB (-5, pros::E_MOTOR_GEARSET_18, false); // chain
+pros::Motor aintakeA (-6, pros::E_MOTOR_GEARSET_18, false); // grab
+pros::Motor aFish (15, pros::E_MOTOR_GEARSET_18, false);
 
 ///
 // Constants
@@ -504,4 +506,34 @@ void HighStakesSkills() {
   apiston2.set_value(0);
   aintakeB.move(0);
   aintakeA.move(0);
+}
+
+void HighStakesRight() {
+  chassis.set_drive_pid(15, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  aFish.move(80);
+  pros::delay(1500);
+  aFish.move(0);
+  chassis.set_drive_pid(-15, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-10, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-55, DRIVE_SPEED - 25, false, true);
+  chassis.wait_drive();
+  apiston.set_value(0);
+}
+
+void HighStakesLeft_NEW() {
+  chassis.set_drive_pid(15, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  aFish.move(80);
+  pros::delay(1500);
+  aFish.move(0);
+  chassis.set_drive_pid(-25, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(35, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-55, DRIVE_SPEED - 25, false, true);
+  chassis.wait_drive();
+  apiston.set_value(0);
 }
