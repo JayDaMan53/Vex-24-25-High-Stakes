@@ -265,15 +265,17 @@ void autonomous() {
   pistonval = true;
   piston.set_value(true);
 
-  // HighStakesRight();
-  // return;
+  HighStakesRight();
+  return;
 
-  if (selector::auton == 1 || selector::auton == -2) {
+  if (selector::auton == 1 || selector::auton == -1) {
     HighStakesLeft_NEW();
-  } else if (selector::auton == 2 || selector::auton == -1) {
+  } else if (selector::auton == 2 || selector::auton == -2) {
     HighStakesRight();
   } else if (selector::auton == 0) {
     HighStakesSkills();
+  } else if (selector::auton == 3 || selector::auton == -3) {
+    donothing();
   }
 }
 

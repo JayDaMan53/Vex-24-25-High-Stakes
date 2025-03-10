@@ -3,6 +3,7 @@
 #include "main.h"
 #include "pros/rtos.hpp"
 #include <cmath>
+#include <random>
 
 
 /////
@@ -509,31 +510,110 @@ void HighStakesSkills() {
 }
 
 void HighStakesRight() {
-  chassis.set_drive_pid(15, DRIVE_SPEED, false, false);
-  chassis.wait_drive();
-  aFish.move(80);
   pros::delay(1500);
-  aFish.move(0);
-  chassis.set_drive_pid(-15, DRIVE_SPEED, false, false);
-  chassis.wait_drive();
-  chassis.set_turn_pid(-10, TURN_SPEED);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-55, DRIVE_SPEED - 25, false, true);
-  chassis.wait_drive();
-  apiston.set_value(0);
-}
-
-void HighStakesLeft_NEW() {
   chassis.set_drive_pid(15, DRIVE_SPEED, false, true);
   chassis.wait_drive();
   aFish.move(80);
   pros::delay(1500);
   aFish.move(0);
-  chassis.set_drive_pid(-25, DRIVE_SPEED, false, false);
+  chassis.set_drive_pid(-35, DRIVE_SPEED, false, false);
   chassis.wait_drive();
-  chassis.set_turn_pid(35, TURN_SPEED);
+  chassis.set_turn_pid(-20, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(-55, DRIVE_SPEED - 25, false, true);
+  chassis.set_drive_pid(-50, DRIVE_SPEED - 25, false, true);
+  chassis.wait_drive();
+  apiston.set_value(0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+  // chassis.reset_pid_targets();
+  chassis.set_turn_pid(-90-30, TURN_SPEED);
+  chassis.wait_drive();
+  aFish.move(80);
+  pros::delay(500);
+  aFish.move(0);
+  aintakeB.move(-127);
+  aintakeA.move(127);
+  chassis.set_drive_pid(50, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.reset_pid_targets();
+  chassis.set_turn_pid(-180-130, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(80, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  aintakeB.move(0);
+  aintakeA.move(0);
+}
+
+void HighStakesLeft_NEW() {
+  pros::delay(1500);
+
+  chassis.set_drive_pid(15, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  aFish.move(80);
+  pros::delay(1500);
+  aFish.move(0);
+  chassis.set_drive_pid(-35, DRIVE_SPEED, false, false);
+  chassis.wait_drive();
+  chassis.set_turn_pid(30, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-60, DRIVE_SPEED - 25, false, true);
   chassis.wait_drive();
   apiston.set_value(0);
+  // chassis.reset_pid_targets();
+  chassis.set_turn_pid(90+30, TURN_SPEED);
+  chassis.wait_drive();
+  aFish.move(80);
+  pros::delay(500);
+  aFish.move(0);
+  aintakeB.move(-127);
+  aintakeA.move(127);
+  chassis.set_drive_pid(50, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.reset_pid_targets();
+  chassis.set_turn_pid(180+130, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(80, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  aintakeB.move(0);
+  aintakeA.move(0);
+}
+
+void newskills() {
+  aFish.move(80);
+  pros::delay(1500);
+  aFish.move(0);
+
+  chassis.set_drive_pid(-20, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-60, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  apiston.set_value(0);
+  chassis.set_drive_pid(-50, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(45+180, TURN_SPEED);
+  chassis.wait_drive();
+  apiston.set_value(1);
+  chassis.set_drive_pid(-70, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(60, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-120, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  apiston.set_value(0);
+  chassis.set_drive_pid(-50, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-45+180, TURN_SPEED);
+  chassis.wait_drive();
+  apiston.set_value(1);
+  chassis.set_drive_pid(-70, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(20, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+}
+
+void donothing() {
+  chassis.set_drive_pid(-40, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
 }

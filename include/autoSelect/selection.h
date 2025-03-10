@@ -3,7 +3,7 @@
 
 //selector configuration
 #define HUE 200
-#define DEFAULT 1
+#define DEFAULT 2
 #define AUTONS "Left", "Right", "Do Nothing"
 
 namespace selector{

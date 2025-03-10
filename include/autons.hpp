@@ -36,3 +36,5 @@ void HighStakesLeft();
 void HighStakesRight();
 void HighStakesLeft_NEW();
 void HighStakesSkills();
+void newskills();
+void donothing();
