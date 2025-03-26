@@ -3,21 +3,24 @@
 #include "display/lvgl.h"
 #include "gif-pros/gifclass.hpp"
 #include "pros/misc.h"
+#include <array>
 #include <cstddef>
 #include <cstdio>
 #include <string>
 #include <vector>
 #include "autoSelect/selection.h"
+#include "pros/motors.h"
+
 pros::Controller master (CONTROLLER_MASTER);
 
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
-bool pistonval = true; // start up
-int whodidit = 0; // make it change relate to what we are doing
 
 pros::Motor intakeB (-5, MOTOR_GEARSET_18, false); // chain
-pros::Motor intakeA (-6, MOTOR_GEARSET_18, false); // grab
-pros::Motor Fish (15, MOTOR_GEARSET_18, false);
+pros::Motor intakeA (-3, MOTOR_GEARSET_18, false); // grab
+pros::Motor Lb (2, MOTOR_GEARSET_18, false);
+
+pros::Rotation rotation_sensor (12);
 
 /*/lv_fs_file_t f;
 lv_fs_res_t res = lv_fs_open(&f, "D:/meme.c", LV_FS_MODE_RD);
@@ -32,12 +35,12 @@ LV_IMG_DECLARE(res);/*/
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)`
   //   the first port is the sensored port (when trackers are not used!)
-  {-19, -18, -17}
+  {-13, -14, -15}
   
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{9, 2, 3}
+  ,{9, 10, 6}
 
   // IMU Port
   ,20
@@ -101,7 +104,9 @@ void initialize() {
   //chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
   exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
-  
+  rotation_sensor.reset();
+  rotation_sensor.reset_position();
+  Lb.set_brake_mode(MOTOR_BRAKE_HOLD);
   // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
   // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
@@ -261,9 +266,9 @@ void autonomous() {
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
   renderGif();
-  whodidit = 1; // who did it is the auto
-  pistonval = true;
-  piston.set_value(true);
+  // whodidit = 1; // who did it is the auto
+  // pistonval = true;
+  // piston.set_value(true);
 
   HighStakesRight();
   return;
@@ -296,14 +301,23 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
-  if (whodidit == 0) { // if auto doesn't run then clamp up but if auto did run then it says the same
-    piston.set_value(1);
-    pistonval = true;
-  }
+  // if (whodidit == 0) { // if auto doesn't run then clamp up but if auto did run then it says the same
+  //   piston.set_value(1);
+  //   pistonval = true;
+  // }
 
-  bool pistonpushed = true;
+  bool pistonval = false;
+
+  bool pistonpushed = false;
+
+  bool brownpushed = false;
+  int rank = 1;
 
   bool release = 0;
+
+  bool lbtest = false;
+
+  int lbPos[] = {300, 1200};
 
   renderGif();
 
@@ -344,21 +358,52 @@ void opcontrol() {
       intakeA.move(0);
     }
 
-    if (master.get_digital(DIGITAL_L1)) {
-      Fish.move(75);
-    } else if (master.get_digital(DIGITAL_Y)) {
-      Fish.move(-75);
-    } else {
-      Fish.move(0);
-      Fish.set_brake_mode(MOTOR_BRAKE_BRAKE);
-    }
-
-    if (master.get_digital(DIGITAL_DOWN) || release > 0) {
-      Fish.set_brake_mode(MOTOR_BRAKE_COAST);
-      if (release == 0) {
-        release = 50;
+    if (lbtest) {
+      if (master.get_digital(DIGITAL_L1)) {
+        printf("rotateion: %d\n", rotation_sensor.get_position());
+        Lb.move(-127);
+      } else if (master.get_digital(DIGITAL_Y)) {
+        printf("rotateion: %d\n", rotation_sensor.get_position());
+        Lb.move(127);
+      } else {
+        Lb.move(0);
+        Lb.set_brake_mode(MOTOR_BRAKE_BRAKE);
       }
-      release -= 1;
+  
+      if (master.get_digital(DIGITAL_DOWN) || release > 0) {
+        Lb.set_brake_mode(MOTOR_BRAKE_COAST);
+        if (release == 0) {
+          release = 50;
+        }
+        release -= 1;
+      }
+    } else {
+      if ((rotation_sensor.get_position() <= lbPos[1] && rank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[1])) {
+          Lb.move(-127);
+          brownpushed = true;
+          printf("val  %d\n", rotation_sensor.get_position());
+      } else if (rank==2 && brownpushed) {
+          // Lb.move(0);
+          Lb.brake();
+          rank = 3;
+          brownpushed = false;
+      }
+
+
+      if ((rotation_sensor.get_position() <= lbPos[0] && rank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[0])) {
+          Lb.move(-127);
+          brownpushed = true;
+          printf("val  %d\n", rotation_sensor.get_position());
+      } else if (rank==1 && brownpushed) {
+          // Lb.move(0);
+          Lb.brake();
+          rank = 2;
+          brownpushed = false;
+      }
+      
+      // if (!master.get_digital(DIGITAL_L1)) {
+      //   brownpushed = false;
+      // }
     }
 
     /*/if (master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) {
