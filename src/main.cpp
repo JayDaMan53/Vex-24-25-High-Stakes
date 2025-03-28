@@ -378,27 +378,18 @@ void opcontrol() {
         release -= 1;
       }
     } else {
-      if ((rotation_sensor.get_position() <= lbPos[1] && rank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[1])) {
+      for (int i : lbPos) {
+        // cout << i << "\n";
+        if ((rotation_sensor.get_position() <= lbPos[i+1] && rank == i+1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == i+1 && rotation_sensor.get_position() <= lbPos[i+1])) {
           Lb.move(-127);
           brownpushed = true;
           printf("val  %d\n", rotation_sensor.get_position());
-      } else if (rank==2 && brownpushed) {
+        } else if (rank==i+1 && brownpushed) {
           // Lb.move(0);
           Lb.brake();
-          rank = 3;
+          rank = i+2;
           brownpushed = false;
-      }
-
-
-      if ((rotation_sensor.get_position() <= lbPos[0] && rank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[0])) {
-          Lb.move(-127);
-          brownpushed = true;
-          printf("val  %d\n", rotation_sensor.get_position());
-      } else if (rank==1 && brownpushed) {
-          // Lb.move(0);
-          Lb.brake();
-          rank = 2;
-          brownpushed = false;
+        }
       }
       
       // if (!master.get_digital(DIGITAL_L1)) {
