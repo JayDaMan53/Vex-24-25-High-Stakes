@@ -23,6 +23,7 @@ pros::Controller master (pros::E_CONTROLLER_MASTER);
 
 pros::ADIDigitalOut apiston ('b');
 pros::ADIDigitalOut apiston2 ('c');
+pros::ADIDigitalOut adoinker ('d');
 
 pros::Motor aintakeB (-5, pros::E_MOTOR_GEARSET_18, false); // chain
 pros::Motor aintakeA (-6, pros::E_MOTOR_GEARSET_18, false); // grab
@@ -615,5 +616,19 @@ void newskills() {
 
 void donothing() {
   chassis.set_drive_pid(-40, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+}
+
+void matchAutoLeft() {
+  adoinker.set_value(1);
+  chassis.set_turn_pid(-45, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_turn_pid(45, TURN_SPEED);
+  chassis.wait_drive();
+  aintakeB.move(0);
+  aintakeA.move(0);
+  chassis.set_drive_pid(10, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
 }

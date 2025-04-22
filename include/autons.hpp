@@ -38,3 +38,4 @@ void HighStakesLeft_NEW();
 void HighStakesSkills();
 void newskills();
 void donothing();
+void matchAutoLeft();

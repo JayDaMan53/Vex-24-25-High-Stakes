@@ -15,6 +15,7 @@ pros::Controller master (CONTROLLER_MASTER);
 
 pros::ADIDigitalOut piston ('b');
 pros::ADIDigitalOut piston2 ('c');
+pros::ADIDigitalOut doinker ('d');
 
 pros::Motor intakeB (-5, MOTOR_GEARSET_18, false); // chain
 pros::Motor intakeA (-3, MOTOR_GEARSET_18, false); // grab
@@ -35,7 +36,7 @@ LV_IMG_DECLARE(res);/*/
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)`
   //   the first port is the sensored port (when trackers are not used!)
-  {-13, -14, -15}
+  {-13, -14, 15}
   
 
   // Right Chassis Ports (negative port will reverse it!)
@@ -107,6 +108,7 @@ void initialize() {
   rotation_sensor.reset();
   rotation_sensor.reset_position();
   Lb.set_brake_mode(MOTOR_BRAKE_HOLD);
+  chassis.set_joystick_threshold(5);
   // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
   // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
@@ -310,6 +312,10 @@ void opcontrol() {
 
   bool pistonpushed = false;
 
+  bool doinkval = false;
+
+  bool doinkpushed = false;
+
   bool brownpushed = false;
   int rank = 1;
 
@@ -317,9 +323,15 @@ void opcontrol() {
 
   bool lbtest = false;
 
-  int lbPos[] = {300, 1200};
+  bool canalign = true;
+
+  int lbPos[] = {34250, 24000, 35000};
 
   renderGif();
+
+  master.clear_line(1);
+
+  rotation_sensor.reset_position();
 
   while (true) {
 
@@ -329,6 +341,8 @@ void opcontrol() {
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
+    master.set_text(1, 1, "Temp: " + std::to_string(Lb.get_temperature())); // Example usage of set_text
+
     if (master.get_digital(DIGITAL_L2) && !pistonpushed) {
       pistonpushed = true;
       pistonval = !pistonval;
@@ -337,6 +351,14 @@ void opcontrol() {
       // pros::delay(500); // Removed because it causing the robot to drive when pushing the button
     } else if (pistonpushed && !master.get_digital(DIGITAL_L2)) {
       pistonpushed = false; // added to prevent the piston from toggling multiple times
+    }
+
+    if (master.get_digital(DIGITAL_A) && !doinkpushed) {
+      doinkpushed = true;
+      doinkval = !doinkval;
+      doinker.set_value(doinkval);
+    } else if (doinkpushed && !master.get_digital(DIGITAL_A)) {
+      doinkpushed = false;
     }
 
     // if (master.get_digital(DIGITAL_L1)) {
@@ -360,10 +382,10 @@ void opcontrol() {
 
     if (lbtest) {
       if (master.get_digital(DIGITAL_L1)) {
-        printf("rotateion: %d\n", rotation_sensor.get_position());
+        printf("rotateion: %d\n", rotation_sensor.get_angle());
         Lb.move(-127);
       } else if (master.get_digital(DIGITAL_Y)) {
-        printf("rotateion: %d\n", rotation_sensor.get_position());
+        printf("rotateion: %d\n", rotation_sensor.get_angle());
         Lb.move(127);
       } else {
         Lb.move(0);
@@ -378,26 +400,58 @@ void opcontrol() {
         release -= 1;
       }
     } else {
-      if ((rotation_sensor.get_position() <= lbPos[1] && rank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[1])) {
+      if ((rotation_sensor.get_angle() <= lbPos[2] && rank == 3 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 3 && rotation_sensor.get_angle() <= lbPos[2])) {
+          Lb.move(127);
+          brownpushed = true;
+          printf("val  %d\n", rotation_sensor.get_angle());
+      } else if (rank==3 && brownpushed) {
+          // Lb.move(0);
+          Lb.brake();
+          rank = 1;
+          brownpushed = false;
+      } else if (rank == 3 && master.get_digital_new_press(DIGITAL_L1)) {
+          printf("val  %d\n", rotation_sensor.get_angle());
+          printf("TARGET: %d\n", lbPos[2]);
+      }
+
+      if ((rotation_sensor.get_angle() >= lbPos[1] && rank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 2 && rotation_sensor.get_angle() >= lbPos[1])) {
           Lb.move(-127);
           brownpushed = true;
-          printf("val  %d\n", rotation_sensor.get_position());
+          printf("val  %d\n", rotation_sensor.get_angle());
       } else if (rank==2 && brownpushed) {
           // Lb.move(0);
           Lb.brake();
           rank = 3;
           brownpushed = false;
+      } else if (rank == 2 && master.get_digital_new_press(DIGITAL_L1)) {
+          printf("val  %d\n", rotation_sensor.get_angle());
+          printf("TARGET: %d\n", lbPos[1]);
       }
 
 
-      if ((rotation_sensor.get_position() <= lbPos[0] && rank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_position() <= lbPos[0])) {
+      if ((rotation_sensor.get_angle() >= lbPos[0] && rank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_angle() >= lbPos[0] && !canalign)) {
           Lb.move(-127);
           brownpushed = true;
-          printf("val  %d\n", rotation_sensor.get_position());
-      } else if (rank==1 && brownpushed) {
+          canalign = false;
+          printf("val  %d\n", rotation_sensor.get_angle());
+      } else if (rank==1 && brownpushed && !canalign) {
           // Lb.move(0);
+          canalign = true;
           Lb.brake();
           rank = 2;
+          brownpushed = false;
+      } else if (rank == 1 && master.get_digital_new_press(DIGITAL_L1)) {
+          printf("val  %d\n", rotation_sensor.get_angle());
+          printf("TARGET: %d\n", lbPos[0]);
+      }
+
+      if (((rotation_sensor.get_angle() <= 2000 && rank == 1) || (brownpushed && rank == 1 && rotation_sensor.get_angle() <= 2000)) && canalign) {
+          Lb.move(-127);
+          brownpushed = true;
+          printf("val  %d\n", rotation_sensor.get_angle());
+      } else if (rank==1 && brownpushed && canalign) {
+          // Lb.move(0);
+          Lb.brake();
           brownpushed = false;
       }
       
