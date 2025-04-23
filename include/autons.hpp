@@ -39,3 +39,4 @@ void HighStakesSkills();
 void newskills();
 void donothing();
 void matchAutoLeft();
+void flip();

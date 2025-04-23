@@ -632,3 +632,18 @@ void matchAutoLeft() {
   chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
 }
+
+void flip() {
+  chassis.set_drive_pid(90, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  adoinker.set_value(1);
+  pros::delay(250);
+  chassis.set_drive_pid(-30, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  adoinker.set_value(0);
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-20, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  apiston.set_value(1);
+}

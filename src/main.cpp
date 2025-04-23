@@ -272,7 +272,7 @@ void autonomous() {
   // pistonval = true;
   // piston.set_value(true);
 
-  HighStakesRight();
+  flip();
   return;
 
   if (selector::auton == 1 || selector::auton == -1) {
@@ -325,7 +325,11 @@ void opcontrol() {
 
   bool canalign = true;
 
-  int lbPos[] = {34250, 24000, 35000};
+  int lbPos[] = {34250, 23000, 35000};
+
+  bool disable = false;
+
+  bool asdwdas = false;
 
   renderGif();
 
@@ -400,7 +404,7 @@ void opcontrol() {
         release -= 1;
       }
     } else {
-      if ((rotation_sensor.get_angle() <= lbPos[2] && rank == 3 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 3 && rotation_sensor.get_angle() <= lbPos[2])) {
+      if ((rotation_sensor.get_angle() <= lbPos[2] && rank == 3 && master.get_digital_new_press(DIGITAL_L1) && !asdwdas) || (brownpushed && rank == 3 && rotation_sensor.get_angle() <= lbPos[2] && !asdwdas)) {
           Lb.move(127);
           brownpushed = true;
           printf("val  %d\n", rotation_sensor.get_angle());
@@ -453,6 +457,19 @@ void opcontrol() {
           // Lb.move(0);
           Lb.brake();
           brownpushed = false;
+      }
+
+      if ((rotation_sensor.get_angle() <= lbPos[0] && rank == 3 && master.get_digital_new_press(DIGITAL_RIGHT) && !asdwdas) || (rank == 3 && brownpushed && rotation_sensor.get_angle() >= lbPos[0] && !asdwdas)) {
+        Lb.move(127);
+        brownpushed = true;
+        asdwdas = true;
+        printf("val  %d\n", rotation_sensor.get_angle());
+      } else if (rank==3 && brownpushed && asdwdas) {
+        // Lb.move(0);
+        Lb.brake();
+        rank = 2;
+        brownpushed = false;
+        asdwdas = false;
       }
       
       // if (!master.get_digital(DIGITAL_L1)) {
