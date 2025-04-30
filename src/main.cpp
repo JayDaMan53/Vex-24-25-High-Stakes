@@ -41,7 +41,7 @@ Drive chassis (
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{9, 10, 6}
+  ,{9, 10, -6}
 
   // IMU Port
   ,20
@@ -272,7 +272,7 @@ void autonomous() {
   // pistonval = true;
   // piston.set_value(true);
 
-  flip();
+  flip2();
   return;
 
   if (selector::auton == 1 || selector::auton == -1) {

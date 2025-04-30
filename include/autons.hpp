@@ -40,3 +40,4 @@ void newskills();
 void donothing();
 void matchAutoLeft();
 void flip();
+void flip2();

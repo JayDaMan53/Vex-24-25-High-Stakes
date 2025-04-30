@@ -1,5 +1,6 @@
 // #include "autons.hpp"
 #include "autons.hpp"
+#include "EZ-Template/util.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
 #include <cmath>
@@ -26,7 +27,7 @@ pros::ADIDigitalOut apiston2 ('c');
 pros::ADIDigitalOut adoinker ('d');
 
 pros::Motor aintakeB (-5, pros::E_MOTOR_GEARSET_18, false); // chain
-pros::Motor aintakeA (-6, pros::E_MOTOR_GEARSET_18, false); // grab
+pros::Motor aintakeA (-3, pros::E_MOTOR_GEARSET_18, false); // grab
 pros::Motor aFish (15, pros::E_MOTOR_GEARSET_18, false);
 
 ///
@@ -633,17 +634,59 @@ void matchAutoLeft() {
   chassis.wait_drive();
 }
 
-void flip() {
-  chassis.set_drive_pid(90, DRIVE_SPEED , false, true);
+void flip() { // mogo side
+  chassis.set_drive_pid(100, DRIVE_SPEED , false, true);
   chassis.wait_drive();
   adoinker.set_value(1);
-  pros::delay(250);
-  chassis.set_drive_pid(-30, DRIVE_SPEED , false, true);
+  // pros::delay(150);
+  chassis.set_drive_pid(-50, DRIVE_SPEED , false, true);
   chassis.wait_drive();
   adoinker.set_value(0);
-  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.set_turn_pid(200, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(-20, DRIVE_SPEED , false, true);
+  chassis.set_drive_pid(-30, DRIVE_SPEED , false, true);
   chassis.wait_drive();
   apiston.set_value(1);
+  pros::delay(250);
+  aintakeB.move(-127);
+  pros::delay(750);
+  aintakeB.move(0);
+  apiston.set_value(0);
+  chassis.set_drive_pid(20, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  aintakeB.move(-127);
+  aintakeA.move(127);
+  chassis.set_drive_pid(50, DRIVE_SPEED , false, true);
+  pros::delay(250);
+  chassis.wait_drive();
+  aintakeB.move(0);
+  aintakeA.move(0);
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-25, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(25, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+}
+
+void flip2() { // ring side
+  chassis.set_drive_pid(-65, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  apiston.set_value(1);
+  pros::delay(250);
+  aintakeB.move(-127);
+  aintakeA.move(127);
+  chassis.set_turn_pid(-100, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(45, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-70, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(30, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_swing_pid(ez::LEFT_SWING, 150, DRIVE_SPEED);
 }
