@@ -44,7 +44,7 @@ Drive chassis (
   ,{9, 10, -6}
 
   // IMU Port
-  ,20
+  ,19
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -267,7 +267,7 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
-  renderGif();
+  // renderGif();
   // whodidit = 1; // who did it is the auto
   // pistonval = true;
   // piston.set_value(true);
@@ -331,7 +331,7 @@ void opcontrol() {
 
   bool asdwdas = false;
 
-  renderGif();
+  // renderGif();
 
   master.clear_line(1);
 

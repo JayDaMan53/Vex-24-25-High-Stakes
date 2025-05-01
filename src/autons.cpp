@@ -674,19 +674,31 @@ void flip() { // mogo side
 }
 
 void flip2() { // ring side
-  chassis.set_drive_pid(-65, DRIVE_SPEED , false, true);
+  chassis.set_drive_pid(-65, DRIVE_SPEED - 25, false, true);
   chassis.wait_drive();
-  apiston.set_value(1);
   pros::delay(250);
+  apiston.set_value(1);
+  pros::delay(500);
   aintakeB.move(-127);
   aintakeA.move(127);
   chassis.set_turn_pid(-100, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_drive_pid(45, DRIVE_SPEED , false, true);
+  chassis.set_drive_pid(50, DRIVE_SPEED , false, true);
   chassis.wait_drive();
-  chassis.set_turn_pid(-70, TURN_SPEED);
+  chassis.set_drive_pid(-50, DRIVE_SPEED , false, true);
   chassis.wait_drive();
-  chassis.set_drive_pid(30, DRIVE_SPEED , false, true);
+  chassis.set_turn_pid(-90, TURN_SPEED);
   chassis.wait_drive();
-  chassis.set_swing_pid(ez::LEFT_SWING, 150, DRIVE_SPEED);
+  chassis.set_drive_pid(70, DRIVE_SPEED , false, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-50, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-60, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(45, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-45, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(180-45, TURN_SPEED);
+  chassis.wait_drive();
 }
