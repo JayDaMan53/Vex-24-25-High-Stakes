@@ -702,3 +702,42 @@ void flip2() { // ring side
   chassis.set_turn_pid(180-45, TURN_SPEED);
   chassis.wait_drive();
 }
+
+
+void skillsflip() { // mid ahh skills
+  aintakeB.move(-127);
+  pros::delay(500);
+  chassis.set_drive_pid(25, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-45, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  pros::delay(250);
+  apiston.set_value(1);
+  pros::delay(250);
+  aintakeA.move(127);
+  chassis.set_turn_pid(0, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(55, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(65, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  // chassis.set_swing_pid(LEFT_SWING, -90, SWING_SPEED);
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+  // chassis.wait_drive();
+  chassis.set_drive_pid(80, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-30, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(20, DRIVE_SPEED, false, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-45, TURN_SPEED);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-80, DRIVE_SPEED, false, true);
+}
