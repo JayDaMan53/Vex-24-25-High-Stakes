@@ -18,7 +18,7 @@ pros::ADIDigitalOut piston2 ('c');
 pros::ADIDigitalOut doinker ('d');
 
 pros::Motor intakeB (-5, MOTOR_GEARSET_18, false); // chain
-pros::Motor intakeA (-3, MOTOR_GEARSET_18, false); // grab
+pros::Motor intakeA (3, MOTOR_GEARSET_18, false); // grab
 pros::Motor Lb (2, MOTOR_GEARSET_18, false);
 
 pros::Rotation rotation_sensor (12);
@@ -267,7 +267,7 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
-  // renderGif();
+  renderGif();
   // whodidit = 1; // who did it is the auto
   // pistonval = true;
   // piston.set_value(true);
@@ -275,15 +275,29 @@ void autonomous() {
   skillsflip();
   return;
 
-  if (selector::auton == 1 || selector::auton == -1) {
-    HighStakesLeft_NEW();
-  } else if (selector::auton == 2 || selector::auton == -2) {
-    HighStakesRight();
-  } else if (selector::auton == 0) {
-    HighStakesSkills();
-  } else if (selector::auton == 3 || selector::auton == -3) {
+  if (selector::auton == 1) { // red left
+    redRingside();
+  } else if (selector::auton == 2) { // red right
+    redGoalside();
+  } else if (selector::auton == -1) { // blue left
+    blueGoalside();
+  } else if (selector::auton == -2) { // blue right
+    blueRingside();
+  } else if (selector::auton == 0) { // skills
+    skillsflip();
+  } else if (selector::auton == 3 || selector::auton == -3) { // noting
     donothing();
   }
+
+  // if (selector::auton == 1 || selector::auton == -1) {
+  //   HighStakesLeft_NEW();
+  // } else if (selector::auton == 2 || selector::auton == -2) {
+  //   HighStakesRight();
+  // } else if (selector::auton == 0) {
+  //   skillsflip();
+  // } else if (selector::auton == 3 || selector::auton == -3) {
+  //   donothing();
+  // }
 }
 
 /**
@@ -299,7 +313,10 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+extern int arank;
+int arank = 1;
 void opcontrol() {
+  extern int arank;
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
@@ -317,7 +334,6 @@ void opcontrol() {
   bool doinkpushed = false;
 
   bool brownpushed = false;
-  int rank = 1;
 
   bool release = 0;
 
@@ -325,13 +341,13 @@ void opcontrol() {
 
   bool canalign = true;
 
-  int lbPos[] = {34000, 22500, 35000};
+  int lbPos[] = {33400, 22500, 35000};
 
   bool disable = false;
 
   // bool asdwdas = false;
 
-  // renderGif();
+  renderGif();
 
   master.clear_line(1);
 
@@ -404,70 +420,72 @@ void opcontrol() {
         release -= 1;
       }
     } else {
-      if ((rotation_sensor.get_angle() <= lbPos[2] && rank == 3 && master.get_digital_new_press(DIGITAL_L1)/* && !asdwdas*/) || (brownpushed && rank == 3 && rotation_sensor.get_angle() <= lbPos[2] /*&& !asdwdas*/)) {
+      if ((rotation_sensor.get_angle() <= lbPos[2] && arank == 3 && master.get_digital_new_press(DIGITAL_L1)/* && !asdwdas*/) || (brownpushed && arank == 3 && rotation_sensor.get_angle() <= lbPos[2] /*&& !asdwdas*/)) {
           Lb.move(127);
           brownpushed = true;
           printf("val  %d\n", rotation_sensor.get_angle());
-      } else if (rank==3 && brownpushed) {
+      } else if (arank==3 && brownpushed) {
           // Lb.move(0);
           Lb.brake();
-          rank = 1;
+          arank = 1;
           brownpushed = false;
-      } else if (rank == 3 && master.get_digital_new_press(DIGITAL_L1)) {
+          rotation_sensor.reset();
+          rotation_sensor.reset_position();
+      } else if (arank == 3 && master.get_digital_new_press(DIGITAL_L1)) {
           printf("val  %d\n", rotation_sensor.get_angle());
           printf("TARGET: %d\n", lbPos[2]);
       }
 
-      if ((rotation_sensor.get_angle() >= lbPos[1] && rank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 2 && rotation_sensor.get_angle() >= lbPos[1])) {
+      if ((rotation_sensor.get_angle() >= lbPos[1] && arank == 2 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && arank == 2 && rotation_sensor.get_angle() >= lbPos[1])) {
           Lb.move(-127);
           brownpushed = true;
           printf("val  %d\n", rotation_sensor.get_angle());
-      } else if (rank==2 && brownpushed) {
+      } else if (arank==2 && brownpushed) {
           // Lb.move(0);
           Lb.brake();
-          rank = 3;
+          arank = 3;
           brownpushed = false;
-      } else if (rank == 2 && master.get_digital_new_press(DIGITAL_L1)) {
+      } else if (arank == 2 && master.get_digital_new_press(DIGITAL_L1)) {
           printf("val  %d\n", rotation_sensor.get_angle());
           printf("TARGET: %d\n", lbPos[1]);
       }
 
 
-      if ((rotation_sensor.get_angle() >= lbPos[0] && rank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && rank == 1 && rotation_sensor.get_angle() >= lbPos[0] && !canalign)) {
+      if ((rotation_sensor.get_angle() >= lbPos[0] && arank == 1 && master.get_digital_new_press(DIGITAL_L1)) || (brownpushed && arank == 1 && rotation_sensor.get_angle() >= lbPos[0] && !canalign)) {
           Lb.move(-127);
           brownpushed = true;
           canalign = false;
           printf("val  %d\n", rotation_sensor.get_angle());
-      } else if (rank==1 && brownpushed && !canalign) {
+      } else if (arank==1 && brownpushed && !canalign) {
           // Lb.move(0);
           canalign = true;
           Lb.brake();
-          rank = 2;
+          arank = 2;
           brownpushed = false;
-      } else if (rank == 1 && master.get_digital_new_press(DIGITAL_L1)) {
+      } else if (arank == 1 && master.get_digital_new_press(DIGITAL_L1)) {
           printf("val  %d\n", rotation_sensor.get_angle());
           printf("TARGET: %d\n", lbPos[0]);
       }
 
-      if (((rotation_sensor.get_angle() <= 2000 && rank == 1) || (brownpushed && rank == 1 && rotation_sensor.get_angle() <= 2000)) && canalign) {
+      if (((rotation_sensor.get_angle() <= 2000 && arank == 1) || (brownpushed && arank == 1 && rotation_sensor.get_angle() <= 2000)) && canalign) {
           Lb.move(-127);
           brownpushed = true;
           printf("val  %d\n", rotation_sensor.get_angle());
-      } else if (rank==1 && brownpushed && canalign) {
+      } else if (arank==1 && brownpushed && canalign) {
           // Lb.move(0);
           Lb.brake();
           brownpushed = false;
       }
 
-      // if ((rotation_sensor.get_angle() <= lbPos[0] && rank == 3 && master.get_digital_new_press(DIGITAL_RIGHT) && !asdwdas) || (rank == 3 && rotation_sensor.get_angle() >= lbPos[0] && asdwdas)) {
+      // if ((rotation_sensor.get_angle() <= lbPos[0] && arank == 3 && master.get_digital_new_press(DIGITAL_RIGHT) && !asdwdas) || (arank == 3 && rotation_sensor.get_angle() >= lbPos[0] && asdwdas)) {
       //   Lb.move(127);
       //   brownpushed = true;
       //   asdwdas = true;
       //   printf("val  %d\n", rotation_sensor.get_angle());
-      // } else if (rank==3 && asdwdas) {
+      // } else if (arank==3 && asdwdas) {
       //   // Lb.move(0);
       //   Lb.brake();
-      //   rank = 2;
+      //   arank = 2;
       //   brownpushed = false;
       //   asdwdas = false;
       // }

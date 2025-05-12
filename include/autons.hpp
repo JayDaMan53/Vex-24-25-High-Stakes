@@ -39,6 +39,10 @@ void HighStakesSkills();
 void newskills();
 void donothing();
 void matchAutoLeft();
-void flip();
-void flip2();
-void skillsflip();
+// void flip();
+// Worlds stuff
+void skillsflip(); // skills
+void redRingside();
+void redGoalside();
+void blueRingside();
+void blueGoalside();
